@@ -7,6 +7,9 @@ namespace Platformer
 {
     public class Game_Manager : MonoBehaviour
     {
+        public static Game_Manager instance;
+        public PlayFabManger PlayFabManger;
+
         public int coinsCounter = 0;
         public int coinSum = 0;
 
@@ -21,17 +24,22 @@ namespace Platformer
         float time_f;
         int time_i;
 
+        private void Awake()
+        {
+            instance = this;
+        }
+
         void Start()
         {
             player = GameObject.Find("Player").GetComponent<PlayerCode>();
             result.SetActive(false);
-            
+
         }
 
         void Update()
         {
             coinText.text = coinsCounter.ToString();
-            if(player.deathState == true)
+            if (player.deathState == true)
             {
                 playerGameObject.SetActive(false);
                 GameObject deathPlayer = (GameObject)Instantiate(deathPlayerPrefab, playerGameObject.transform.position, playerGameObject.transform.rotation);
@@ -40,17 +48,21 @@ namespace Platformer
                 Invoke("ReloadLevel", 3);
             }
 
-            Result_State();
-        }
-
-        private void ReloadLevel()
-        {
-            Application.LoadLevel(Application.loadedLevel);
-        }
-
-        void Result_State()
-        {
             if (result.active == true)
+            {
+                Result_State();
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+
+            void ReloadLevel()
+            {
+                Application.LoadLevel(Application.loadedLevel);
+            }
+
+            void Result_State()
             {
                 coinSum = coinsCounter;
                 coinResult_Text.text = coinSum.ToString();
@@ -59,13 +71,11 @@ namespace Platformer
                 time_i = Mathf.FloorToInt(time_f);
                 Time.timeScale = 0;
                 timeResult_Text.text = time_i.ToString();
-            }
-            else 
-            {
-                Time.timeScale = 1;
-            }
-        }
 
+                PlayFabManger.¬ö¿ýµ¹±Æ¦æº](coinSum);
+            }
+
+        }
 
     }
 }
