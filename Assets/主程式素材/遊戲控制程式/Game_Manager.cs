@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Platformer
@@ -24,6 +26,8 @@ namespace Platformer
         float time_f;
         int time_i;
 
+        public GameObject nameWindow;
+
         private void Awake()
         {
             instance = this;
@@ -45,7 +49,7 @@ namespace Platformer
                 GameObject deathPlayer = (GameObject)Instantiate(deathPlayerPrefab, playerGameObject.transform.position, playerGameObject.transform.rotation);
                 deathPlayer.transform.localScale = new Vector3(playerGameObject.transform.localScale.x, playerGameObject.transform.localScale.y, playerGameObject.transform.localScale.z);
                 player.deathState = false;
-                Invoke("ReloadLevel", 3);
+                Invoke("ReloadLevel",2.0f);
             }
 
             if (result.active == true)
@@ -55,11 +59,6 @@ namespace Platformer
             else
             {
                 Time.timeScale = 1;
-            }
-
-            void ReloadLevel()
-            {
-                Application.LoadLevel(Application.loadedLevel);
             }
 
             void Result_State()
@@ -75,7 +74,16 @@ namespace Platformer
                 PlayFabManger.¬ö¿ýµ¹±Æ¦æº](coinSum);
             }
 
-        }
+            if (nameWindow.active == true)
+            {
+                Time.timeScale = 0;
+            }
 
+        }
+        public void ReloadLevel()
+        {
+            //SceneManager.LoadScene(1);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }

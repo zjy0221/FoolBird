@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using UnityEngine.UI;
 
 public class PlayFabManger : MonoBehaviour
 {
+    [Header("輸入匿名視窗")]
+    public GameObject nameWindow;
+    public Text nameInput;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,23 +29,47 @@ public class PlayFabManger : MonoBehaviour
         var 要求 = new LoginWithCustomIDRequest
         {
             CustomId = SystemInfo.deviceUniqueIdentifier,
-            CreateAccount = true
-
+            CreateAccount = true,
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams 
+            {
+                GetPlayerProfile = true,
+            }
         };
-        PlayFabClientAPI.LoginWithCustomID(要求, 成功, 失敗);
-
-        void 成功 ( LoginResult result ) 
-        {
-            Debug.Log("你成功登入了，親！");
-        }
-
-        void 失敗 ( PlayFabError error )
-        {
-            Debug.Log("你成功失敗了，請加油喔！");
-            Debug.Log(error.GenerateErrorReport());
-        }
-
+        PlayFabClientAPI.LoginWithCustomID(要求, 登入成功, 登入失敗);
     }
+    void 登入成功(LoginResult result)
+    {
+        Debug.Log("你成功登入了，親！");
+        string name = null;
+
+        if (result.InfoResultPayload.PlayerProfile != null)
+            name = result.InfoResultPayload.PlayerProfile.DisplayName;
+        if (name == null)
+        {
+            nameWindow.SetActive(true);
+
+        }
+    }
+    void 登入失敗(PlayFabError error)
+    {
+        Debug.Log("你成功失敗了，請加油喔！");
+        Debug.Log(error.GenerateErrorReport());
+    }
+    public void name_btn()
+    {
+        var 要求 = new UpdateUserTitleDisplayNameRequest
+        {
+            DisplayName = nameInput.text,
+        };
+        PlayFabClientAPI.UpdateUserTitleDisplayName(要求, 輸入名字顯示, 失敗與錯誤);
+    }
+
+    void 輸入名字顯示( UpdateUserTitleDisplayNameResult result ) 
+    {
+        Debug.Log("更新匿名顯示！");
+    }
+
+
 
     public void 紀錄給排行榜 ( int coin )
     {
@@ -55,17 +85,16 @@ public class PlayFabManger : MonoBehaviour
             }
         };
 
-        PlayFabClientAPI.UpdatePlayerStatistics(要求, 排行榜更新, 失敗);
+        PlayFabClientAPI.UpdatePlayerStatistics(要求, 排行榜更新, 失敗與錯誤);
 
         void 排行榜更新(UpdatePlayerStatisticsResult 結果) 
         {
             Debug.Log("已經成功把分數上傳至雲端");
         }
-        void 失敗(PlayFabError error) 
-        {
-            
-        }
     }
 
-
+    void 失敗與錯誤(PlayFabError error)
+    {
+        Debug.Log(error.GenerateErrorReport());
+    }
 }
