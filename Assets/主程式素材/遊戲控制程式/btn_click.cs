@@ -7,7 +7,7 @@ public class btn_click : MonoBehaviour
 {
     public void OnMouseDown() 
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
 }
