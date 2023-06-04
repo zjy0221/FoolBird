@@ -62,6 +62,7 @@ public class PlayFabManger : MonoBehaviour
             DisplayName = nameInput.text,
         };
         PlayFabClientAPI.UpdateUserTitleDisplayName(要求, 輸入名字顯示, 失敗與錯誤);
+        nameWindow.SetActive(false);
     }
 
     void 輸入名字顯示( UpdateUserTitleDisplayNameResult result ) 
